@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+  #
+  # backend server
+  #
+  imgui:
+    #restart: always
+    #image: mcl_slimjre:v03
+    build:
+      context: .
+      target: relay # release/artifact app stage
+    ports:
+      - 8080:8080
+    command:
+    stop_signal: SIGINT
+  #
+  # wasm cross-compilation
+  #
+  wasm:
+    #image: wasmkjt:v01
+    build:
+      #context: ./client
+      dockerfile: ./Dockerfile.wasm
+      target: relay # relay release/artifact app stage
+      tags:
+        - "wasmkjt:01"
+    #command: /bin/sh -c "./trunk serve --address 0.0.0.0 --port ${TRUNK_SERVE_PORT:-8081}"
+    stop_signal: SIGINT

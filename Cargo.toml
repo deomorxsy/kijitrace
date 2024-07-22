@@ -1,0 +1,33 @@
+[package]
+name = "kijitrace"
+version = "0.1.0"
+edition = "2021"
+
+ [env]
+#CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_LINKER="<wasi-sdk>/bin/wasm-ld"
+#CC_wasm32-unknown-unknown="<wasi-sdk>/bin/clang"
+#CXX_wasm32-unknown-unknown="<wasi-sdk>/bin/clang++"
+#CXXFLAGS_wasm32-unknown-unknown="-I<wasi-sdk>/share/wasi-sysroot/include --target=wasm32-wasi"
+
+[build]
+#rustflags = ["-C", "link-args=-L<wasi-sdk>/share/wasi-sysroot/lib/wasm32-wasi"]
+
+[dependencies]
+
+
+[dev-dependencies]
+copypasta = "0.8"
+glium = { version = "0.34.0", default-features = true }
+image = "0.23"
+imgui = { path = "../imgui", features = ["tables-api"] }
+imgui-glium-renderer = { path = "../imgui-glium-renderer" }
+imgui-winit-support = { path = "../imgui-winit-support" }
+
+# Pin indirect dependency scoped-tls to 1.0.0
+# as 1.0.1 bumped MSRV to 1.59
+# Used only in
+# imgui-examples -> glium -> glutin -> wayland-client -> scoped-tls
+# so not worth bumping MSRV for this basically to keep CI happy
+# FIXME: Remove this for imgui-rs v0.10 and bump MSRV
+scoped-tls = "=1.0.0"
+
