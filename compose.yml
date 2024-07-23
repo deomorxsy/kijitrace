@@ -8,7 +8,9 @@ services:
     #image: mcl_slimjre:v03
     build:
       context: .
-      target: relay # release/artifact app stage
+      target: builder #relay # release/artifact app stage
+      tags:
+        - "localhost:5000/kjtgui:01"
     ports:
       - 8080:8080
     command:
@@ -23,6 +25,6 @@ services:
       dockerfile: ./Dockerfile.wasm
       target: relay # relay release/artifact app stage
       tags:
-        - "wasmkjt:01"
+        - "localhost:5000/wasmkjt:01"
     #command: /bin/sh -c "./trunk serve --address 0.0.0.0 --port ${TRUNK_SERVE_PORT:-8081}"
     stop_signal: SIGINT

@@ -1,7 +1,5 @@
 use imgui::*;
 
-use imgui::*;
-
 mod support;
 
 fn main() {
