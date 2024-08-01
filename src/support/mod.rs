@@ -12,7 +12,7 @@ use std::time::Instant;
 
 mod clipboard;
 
-pub const FONT_SIZE: f32 = 13.0;
+pub const FONT_SIZE: f32 = 17.0;
 
 #[allow(dead_code)] // annoyingly, RA yells that this is unusued
 pub fn simple_init<F: FnMut(&mut bool, &mut Ui) + 'static>(title: &str, run_ui: F) {
@@ -22,7 +22,8 @@ pub fn simple_init<F: FnMut(&mut bool, &mut Ui) + 'static>(title: &str, run_ui: 
 pub fn init_with_startup<FInit, FUi>(title: &str, mut startup: FInit, mut run_ui: FUi)
 where
     FInit: FnMut(&mut Context, &mut Renderer, &Display<WindowSurface>) + 'static,
-    FUi: FnMut(&mut bool, &mut Ui) + 'static,
+    //FUi: FnMut(&mut bool, &mut Ui) + 'static'
+    FUi: FnMut(&mut bool, &mut Ui) + 'static
 {
     let mut imgui = create_context();
 
@@ -129,7 +130,7 @@ pub fn create_context() -> imgui::Context {
     // value (as the scaling is handled by winit)
     imgui.fonts().add_font(&[
         FontSource::TtfData {
-            data: include_bytes!("../../../resources/Roboto-Regular.ttf"),
+            data: include_bytes!("../../resources/Roboto-Regular.ttf"),
             size_pixels: FONT_SIZE,
             config: Some(FontConfig {
                 // As imgui-glium-renderer isn't gamma-correct with
@@ -145,7 +146,7 @@ pub fn create_context() -> imgui::Context {
             }),
         },
         FontSource::TtfData {
-            data: include_bytes!("../../../resources/mplus-1p-regular.ttf"),
+            data: include_bytes!("../../resources/MPLUS1p-Regular.ttf"),
             size_pixels: FONT_SIZE,
             config: Some(FontConfig {
                 // Oversampling font helps improve text rendering at

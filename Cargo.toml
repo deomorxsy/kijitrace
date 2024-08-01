@@ -4,23 +4,31 @@ version = "0.1.0"
 edition = "2021"
 
  [env]
-#CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_LINKER="<wasi-sdk>/bin/wasm-ld"
-#CC_wasm32-unknown-unknown="<wasi-sdk>/bin/clang"
-#CXX_wasm32-unknown-unknown="<wasi-sdk>/bin/clang++"
-#CXXFLAGS_wasm32-unknown-unknown="-I<wasi-sdk>/share/wasi-sysroot/include --target=wasm32-wasi"
+CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_LINKER="<wasi-sdk>/bin/wasm-ld"
+CC_wasm32-unknown-unknown="<wasi-sdk>/bin/clang"
+CXX_wasm32-unknown-unknown="<wasi-sdk>/bin/clang++"
+CXXFLAGS_wasm32-unknown-unknown="-I<wasi-sdk>/share/wasi-sysroot/include --target=wasm32-wasi"
 
 [build]
-#rustflags = ["-C", "link-args=-L<wasi-sdk>/share/wasi-sysroot/lib/wasm32-wasi"]
+rustflags = ["-C", "link-args=-L<wasi-sdk>/share/wasi-sysroot/lib/wasm32-wasi"]
+
+[lib]
+crate-type = ["cdylib"]
 
 [dependencies]
 copypasta = "0.10.1"
 glium = "0.34.0"
+glutin = "0.32.0"
 image = "0.25.2"
 imgui = "0.12.0"
+imgui-sys = "0.12.0"
 imgui-glium-renderer = "0.12.0"
 imgui-winit-support = "0.12.0"
-
-
+#roboto = { git = "https://github.com/google/roboto.git" }
+opentelemetry = "0.22"
+opentelemetry_sdk = "0.22"
+opentelemetry-stdout = { version = "0.3", features = ["trace"] }
+tonic = "0.12.1"
 
 # Pin indirect dependency scoped-tls to 1.0.0
 # as 1.0.1 bumped MSRV to 1.59
@@ -30,3 +38,10 @@ imgui-winit-support = "0.12.0"
 # FIXME: Remove this for imgui-rs v0.10 and bump MSRV
 scoped-tls = "=1.0.0"
 
+[package.metadata.docs.rs]
+targets = [
+    "aarch64-linux-android",
+    "x86_64-apple-darwin",
+    "x86_64-pc-windows-msvc",
+    "x86_64-unknown-linux-gnu",
+]

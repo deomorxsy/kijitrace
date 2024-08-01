@@ -1,0 +1,73 @@
+FROM alpine:3.20 as font-builder
+WORKDIR /app
+
+# important: keep the >> or else you will overwrite the repositories file.
+RUN <<EOF
+    cat >> /etc/apk/repositories <<'EOL'
+    #/media/cdrom/apks
+    http://dl-cdn.alpinelinux.org/alpine/v3.13/main
+    http://dl-cdn.alpinelinux.org/alpine/v3.13/community
+EOL
+EOF
+
+RUN apk update && apk add --upgrade \
+        build-base \
+        make \
+        pkgconf \
+        openssl=3.3.1-r3 \
+        openssl-dev=3.3.1-r3  \
+        git  \
+        python3=3.12.3-r1 \
+        python2
+
+RUN mkdir -p /app/roboto-src && \
+    cd /app/roboto-src && \
+    git clone https://github.com/google/roboto.git && \
+    python -m ensurepip --default-pip && \
+    pip3 install --upgrade pip && \
+    pip3 install --user virtualenv
+
+RUN python3 -m virtualenv --python=python2.7 roboto-env && \
+    source roboto-env/bin/activate && \
+    cd roboto && \
+    pip install -r requirements.txt && \
+    make
+
+#FROM alpine:3.20 as builder
+#WORKDIR /app
+
+#COPY --from=font-builder
+
+# important: keep the >> or else you will overwrite the repositories file.
+#RUN <<EOF
+#    cat >> /etc/apk/repositories <<'EOL'
+#    #/media/cdrom/apks
+#    http://dl-cdn.alpinelinux.org/alpine/v3.2/main
+#    http://dl-cdn.alpinelinux.org/alpine/v3.2/community
+#EOL
+#EOF
+
+#RUN apk update && apk add --upgrade "build-base" "pkgconf" openssl=3.3.1-r3 "openssl-dev" git && \
+#    mkdir -p /app/roboto-src && \
+#    cd /app/roboto-src && \
+#    git clone https://github.com/google/roboto.git
+#    pip install --user virtualenv
+#    virtualenv roboto-env
+#    source roboto-env/bin/activate
+
+#RUN apk --no-cache add \
+#    ttf-roboto \
+#       --repository=https://git.alpinelinux.org/aports/tree/community/ttf-roboto?h=3.12-stable
+
+#RUN apk --no-cache add font-noto ttf-roboto
+#RUN apk --no-cache add ttf-roboto
+
+##RUN apk add --no-cache build-base musl-dev "font-config" "ttf-roboto"
+    #apk add font-terminus font-inconsolata font-dejavu font-noto && \
+    #apk add font-noto-cjk font-awesome font-noto-extra font-terminus && \
+    #apk add font-noto font-noto-thai font-noto-tibetan font-ipa && \
+    #apk add font-sony-misc font-jis-misc ttf-roboto && \
+    #rustup component add rustfmt && \
+    #rustup component add clippy-preview && \
+    #cargo install --path .
+

@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+//package trace;
+package opentelemetry.proto.metrics.v1;
+
+message Resource {
+    map<string, string> attributes = 1;
+}
+
+message InstrumentationLibrary {
+    string name = 1;
+    string version = 2;
+}
+
+message Metric {
+    string name = 1;
+    double value = 2;
+    int64 timestamp = 3;
+}
+
+message ExportMetricsServiceRequest {
+    repeated Resource resource = 1;
+    repeated InstrumentationLibrary instrumentation_library = 2;
+    repeated Metric data_points = 3;
+}
+
+message ExportMetricsServiceResponse {
+    // Define response fields if needed
+}
+
+service MetricsService {
+    rpc Export(ExportMetricsServiceRequest) returns (ExportMetricsServiceResponse);
+}
+
+//service Trace {
+//    rpc Add(CalculationRequest) returns (CalculationResponse);
+//}
+
+/*
+*message TraceRequest {
+    int64 a = 1;
+    int64 b = 2;
+}
+
+message CalculationResponse { int64 result = 1};
+*
+*/

@@ -1,8 +1,40 @@
+use std::{fs, thread};
+use std::sync::mpsc;
+
 use imgui::*;
+//use proto::trace_server::{Trace, CalculationReponse};
+use proto::trace_server::{opentelemetry.proto.metrics.v1, ExportMetricsServiceRequest}
 
 mod support;
+mod proto {
+    tonic::include_proto!("opentelemetry.proto.metrics.v1");
+}
+mod trace-client;
+mod plothistogram;
 
-fn main() {
+
+#[tonic::async_trait]
+impl importMetrics for ExportMetricsServiceRequest {
+    async fn add(
+        &self,
+        request: tonic:;Request<proto::ExportMetricRequest>,
+        ) -> Result<tonic::Response<proto::ExportMetricResponse>, tonic::Status> {
+            println!("Got a request{:?}", request);
+
+            let input = request.get_ref();
+
+            let response = proto::CalculationResponse {
+                result: input.a + input.b,
+            };
+
+            Ok(tonic::Response::new(response))
+    }
+}
+
+#[tokio::main]
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+
+
     let mut value = 0;
     let choices = ["test test this is 1", "test test this is 2"];
     support::simple_init(file!(), move |_, ui| {
@@ -16,6 +48,9 @@ fn main() {
                     value %= 2;
                 }
 
+                ui.text_wrapper("Select type of plot");
+
+
                 ui.button("This...is...imgui-rs!");
                 ui.separator();
                 let mouse_pos = ui.io().mouse_pos;
@@ -25,4 +60,20 @@ fn main() {
                 ));
             });
     });
+
+    let grpc_task = task::spawn(async {
+        let addr = "[::1]:50051".parse()?;
+        let calc = ExportMetricRequestService::default();
+    })
+
+    grpc_task.await?;
+    Ok(())
+}
+
+#[cfg(tests)]
+mod tests {
+    #[tests]
+    fn test_example() {
+        assert_q!(2 + 2, 4);
+    }
 }
